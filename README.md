@@ -70,7 +70,9 @@ for reference.
 - Since the UI's own intent already treats alert resolution as a shared, universal action, the API enforcing exactly that is not a mismatch — it's correct behavior for a shared SOC queue.
 - Bonus check: requested a non-existent alert ID and confirmed a proper `404`, ruling out missing existence validation too.
 - **Conclusion:** Not a vulnerability.
+  
 **SQL Injection — 4 input vectors:**
+
 - **Login form:** tried an auth-bypass payload (`administrator'--`) — login failed normally, no bypass.
 - **Alert message field:** submitted a logic payload and a lone single quote — both stored and displayed back as exact literal text, no errors, no broken queries.
 - **Alert-ID URL parameter:** replaced the numeric ID with a single quote — rejected at Flask's own routing layer (`<int:...>` type conversion) before ever reaching a database query.
