@@ -62,3 +62,31 @@ for reference.
 | 2 | FalconStrix | SQL Injection across 4 input vectors (login form, alert message field, alert-ID parameter, username-availability endpoint) | CWE-89 (SQL Injection) | No injection — parameterized queries, strict route typing, and input allow-listing each independently block it |
  
 ### No-vulnerability tests in brief
+ 
+**IDOR — `/api/alerts/<id>/resolve`:**
+- Created alerts under three separate accounts (`zaid`, `humza`, `admin`) and attempted cross-account resolution via Burp.
+- Every account could resolve every alert, regardless of who created it.
+- Checked the actual UI for all three accounts — the "Solve" button was equally visible and clickable for every alert, for every account.
+- Since the UI's own intent already treats alert resolution as a shared, universal action, the API enforcing exactly that is not a mismatch — it's correct behavior for a shared SOC queue.
+- Bonus check: requested a non-existent alert ID and confirmed a proper `404`, ruling out missing existence validation too.
+- **Conclusion:** Not a vulnerability.
+**SQL Injection — 4 input vectors:**
+- **Login form:** tried an auth-bypass payload (`administrator'--`) — login failed normally, no bypass.
+- **Alert message field:** submitted a logic payload and a lone single quote — both stored and displayed back as exact literal text, no errors, no broken queries.
+- **Alert-ID URL parameter:** replaced the numeric ID with a single quote — rejected at Flask's own routing layer (`<int:...>` type conversion) before ever reaching a database query.
+- **Username-availability endpoint:** sent a properly URL-encoded logic payload — rejected outright by a strict server-side allow-list on allowed characters.
+- Four different input types, three different underlying defense mechanisms, all independently effective.
+- **Conclusion:** No injection possible through any of the four tested vectors.
+## Disclaimer
+ 
+All testing in this repo was performed exclusively against my own
+locally-hosted projects, in an isolated lab environment I control. No
+third-party systems, production services, or other people's applications
+were tested.
+ 
+## Structure
+ 
+```
+/reports/          → vulnerability write-ups (PDF)
+/FalconStrix/       → target application source (with fixes applied)
+```
