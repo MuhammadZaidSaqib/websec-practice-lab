@@ -1,4 +1,3 @@
-
 # websec-practice-lab
  
 A personal lab for practicing web application security testing — applying
@@ -10,7 +9,9 @@ real, self-built applications instead of pre-made lab boxes.
 Learning security concepts in isolated labs is one thing; finding and fixing
 real bugs in a real codebase is another. This repo documents that process:
 setting up a proper attacker/target lab, testing methodically, and writing
-up findings the way a real security report would look.
+up findings the way a real security report would look — including tests
+that turned up **no** vulnerability, since knowing what's *not* broken is
+just as much a part of the process as finding what is.
  
 ## Lab setup
  
@@ -42,22 +43,22 @@ admin-gated manual override.
 ### Finding 3 in brief
  
 State-changing routes relied solely on the session cookie for
-authorization, with no CSRF token and no `SameSite` cookie attribute. Proven
-with two working proof-of-concept pages: a plain auto-submitting form
-(`/logout`) and a `text/plain`-encoded form that bypassed the browser's CORS
-preflight check (`/api/alerts/manual`). Fixed with Flask-WTF CSRF tokens
-across every route/form plus `SameSite=Lax` as a second layer of defense.
+authorization, with no CSRF token and no `SameSite` cookie attribute.
+Proven with two working proof-of-concept pages: a plain auto-submitting
+form (`/logout`) and a `text/plain`-encoded form that bypassed the
+browser's CORS preflight check (`/api/alerts/manual`). Fixed with
+Flask-WTF CSRF tokens across every route/form plus `SameSite=Lax` as a
+second layer of defense.
  
-## Disclaimer
+## Tested — No Vulnerability Found
  
-All testing in this repo was performed exclusively against my own
-locally-hosted projects, in an isolated lab environment I control. No
-third-party systems, production services, or other people's applications
-were tested.
+Not every test turns up a bug. These were tested with real technique and
+found to be properly defended; full write-ups are in [`/reports`](./reports)
+for reference.
  
-## Structure
+| # | Target | Test | Class | Result |
+|---|--------|------|-------|--------|
+| 1 | FalconStrix | IDOR on `/api/alerts/<id>/resolve` (cross-account resolve) | CWE-639 (Insecure Direct Object Reference) | Not a vulnerability — shared SOC-queue design, UI intent matches API enforcement |
+| 2 | FalconStrix | SQL Injection across 4 input vectors (login form, alert message field, alert-ID parameter, username-availability endpoint) | CWE-89 (SQL Injection) | No injection — parameterized queries, strict route typing, and input allow-listing each independently block it |
  
-```
-/reports/          → vulnerability write-ups (PDF)
-/FalconStrix/       → target application source (with fixes applied)
-```
+### No-vulnerability tests in brief
