@@ -80,7 +80,18 @@ for reference.
 - Four different input types, three different underlying defense mechanisms, all independently effective.
 - **Conclusion:** No injection possible through any of the four tested vectors.
 
-## Finding 3 — Cross-Site Request Forgery State-changing endpoints relied solely on authenticated session cookies. Proof-of-concept attacks successfully forced: - Logout - Manual alert creation Mitigation included: - Flask-WTF CSRF protection - SameSite=Lax session cookies - CSRF tokens across all forms - CSRF headers for JavaScript requests # Additional Security Assessment ## Stored Cross-Site Scripting (XSS) The Live Alerts Description field was tested using multiple stored XSS payloads. The application stored the payload unchanged but safely HTML-escaped it during rendering, preventing script execution. A follow-up assessment of the Resolved Cases page could not be completed because of an unrelated alert-resolution workflow defect. As a result, that rendering path remains an open assessment rather than a confirmed vulnerability. :contentReference[oaicite:2]{index=2} :contentReference[oaicite:3]{index=3}
+## Finding 3 — Cross-Site Request Forgery 
+State-changing endpoints relied solely on authenticated session cookies.
+Proof-of-concept attacks successfully forced: - Logout 
+- Manual alert creation Mitigation included:
+- Flask-WTF CSRF protection - SameSite=Lax session cookies - CSRF tokens across all forms
+- CSRF headers for JavaScript requests # Additional Security Assessment
+
+## Stored Cross-Site Scripting (XSS) 
+The Live Alerts Description field was tested using multiple stored XSS payloads.
+The application stored the payload unchanged but safely HTML-escaped it during rendering, preventing script execution. 
+A follow-up assessment of the Resolved Cases page could not be completed because of an unrelated alert-resolution workflow defect.
+As a result, that rendering path remains an open assessment rather than a confirmed vulnerability. :contentReference[oaicite:2]{index=2} :contentReference[oaicite:3]{index=3}
 
 
 ## Disclaimer
